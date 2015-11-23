@@ -39,5 +39,47 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    Mux16(a=ALUOut, b=instruction, sel=not15, out=MuxOut1); // Mux16 on far left
+
+    And(a=instruction[15], b=instruction[5], out=ARegCInst); // a reg c instruction
+    Not(in= instruction[15], out= not15);
+    Or(a=ARegCInst, b=not15, out= LoadA);
+    ARegister(in=MuxOut1,load=LoadA, out=ARegOut, out[0..14]=addressM);
+
+    And(a=instruction[4], b=instruction[15], out=DLoad);
+    DRegister(in=ALUOut,load=DLoad, out=DRegOut);
+
+    Mux16(a=ARegOut, b=inM, sel=instruction[12], out=AorM); //second Mux16
+
+    ALU(x=DRegOut, y=AorM, zx= instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], zr=zero, ng=negative, out=outM, out=ALUOut);
+
+    And(a=instruction[15], b= instruction[3], out = writeM); // writeM goes to RAM load bit
+    
+    /*
+    And(a=instruction[15], b=instruction[1], out=preJEQ);
+    And(a=preJEQ, b=zero, out=JEQ);
+
+    And(a=instruction[15], b=instruction[1], out=preJGE);
+    And(a=preJGE, b=instruction[0], out=JGE);
+
+    Or(a=JEQ,b=JGE,out=pcLoad);
+    */
+    
+    //Jump Logic
+    And(a=instruction[2], b=negative, out=j1);
+    And(a=instruction[1], b=zero, out=j2);
+    
+    Or(a=negative, b=zero, out=notPositive);
+    Not(in=notPositive, out=positive);
+    
+    And(a=instruction[0], b=positive, out=j3);
+    
+    Or(a=j1, b=j2, out=j1And2);
+    Or(a=j1And2, b=j3, out=jump);
+    
+    And(a=jump, b=instruction[15], out=pcLoad);
+    // End jump Logic
+
+PC(in= ARegOut, load=pcLoad , inc=true, reset=reset, out[0..14]=pc);
+
 }
