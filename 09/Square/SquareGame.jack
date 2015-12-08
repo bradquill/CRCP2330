@@ -2,16 +2,14 @@
 class SquareGame {
 
     field Square square;
-
-    
     field int direction; 
-
+    field int lives;
 
     /** Constructs a new Square Game. */
     constructor SquareGame new() {
-        let square = Square.new(0, 0, 30);
+        
+        let square = Square.new(256, 128, 30, 3);
         let direction = 0;
-
         return this;
     }
 
@@ -26,8 +24,16 @@ class SquareGame {
         var boolean exit;
 
         let exit = false;
-
+        
         while (~exit) {
+
+        do showLives();
+        if (square.getLives() < 1) {
+            do Screen.clearScreen();
+            do Output.moveCursor(0,0);
+            do Output.printString("Game Over sucker");
+            let exit = true;
+        }
             while (key = 0) {
                 let key = Keyboard.keyPressed();
                 do moveSquare();
@@ -60,8 +66,7 @@ class SquareGame {
                 let key = Keyboard.keyPressed();
                 do moveSquare();
             }
-        }
-            
+        } 
         return;
 	}
 
@@ -71,6 +76,7 @@ class SquareGame {
         }
         if (direction = 2) {
             do square.moveDown();
+            
         }
         if (direction = 3) {
             do square.moveLeft();
@@ -78,8 +84,13 @@ class SquareGame {
         if (direction = 4) {
             do square.moveRight();
         }
-
         do Sys.wait(5); 
+        return;
+    }
+    method void showLives(){
+        do Output.moveCursor(0,0);
+        do Output.printString("Lives Remaining: ");
+        do Output.printInt(square.getLives());
         return;
     }
 

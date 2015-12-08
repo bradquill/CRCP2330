@@ -1,14 +1,17 @@
 class Square {
 
     field int x, y;
-
     field int size;
+    field int move;
+    field int lives;
+    
 
-    constructor Square new(int Ax, int Ay, int Asize) {
+    constructor Square new(int Ax, int Ay, int Asize, int aLives) {
         let x = Ax;
         let y = Ay;
         let size = Asize;
-
+        let move = 2;
+        let lives = aLives;
         do draw();
 
         return this;
@@ -53,7 +56,7 @@ class Square {
         if (y > 1) {
             do Screen.setColor(false);
             do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
-            let y = y - 2;
+            let y = y - move;
             do Screen.setColor(true);
             do Screen.drawRectangle(x, y, x + size, y + 1);
         } 
@@ -64,7 +67,7 @@ class Square {
         if ((y + size) < 254) {
             do Screen.setColor(false);
             do Screen.drawRectangle(x, y, x + size, y + 1);
-            let y = y + 2;
+            let y = y + move;
             do Screen.setColor(true);
             do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
         }
@@ -75,7 +78,7 @@ class Square {
         if (x > 1) {
             do Screen.setColor(false);
             do Screen.drawRectangle((x + size) - 1, y, x + size, y + size);
-            let x = x - 2;
+            let x = x - move;
             do Screen.setColor(true);
             do Screen.drawRectangle(x, y, x + 1, y + size);
         }
@@ -86,7 +89,7 @@ class Square {
         if ((x + size) < 510) {
             do Screen.setColor(false);
             do Screen.drawRectangle(x, y, x + 1, y + size);
-            let x = x + 2;
+            let x = x + move;
             do Screen.setColor(true);
             do Screen.drawRectangle((x + size) - 1, y, x + size, y + size);
         }
@@ -96,9 +99,17 @@ class Square {
     method void checkWall() {
         if (((x + size) = 510) | (x < 1) | (y < 1) | (y + size = 254)) {
             do erase();
-          //  do Output.printString("Game Over");
+            do dispose();
+            do Square.new(256, 128, 30, lives - 1);
         }
+
         return;
     } 
- 
+
+    method int getLives() {
+        return lives;
+
+    }
+    
+
 }
