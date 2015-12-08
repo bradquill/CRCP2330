@@ -4,7 +4,7 @@ class Square {
     field int size;
     field int move;
     field int lives;
-    
+    field int count;
 
     constructor Square new(int Ax, int Ay, int Asize, int aLives) {
         let x = Ax;
@@ -12,6 +12,7 @@ class Square {
         let size = Asize;
         let move = 2;
         let lives = aLives;
+
         do draw();
 
         return this;
@@ -97,6 +98,7 @@ class Square {
     }
 
     method void checkWall() {
+        let count = count + 1;
         if (((x + size) = 510) | (x < 1) | (y < 1) | (y + size = 254)) {
             do erase();
             do dispose();

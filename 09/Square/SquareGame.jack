@@ -4,12 +4,14 @@ class SquareGame {
     field Square square;
     field int direction; 
     field int lives;
+    field int count;
 
     /** Constructs a new Square Game. */
     constructor SquareGame new() {
         
         let square = Square.new(256, 128, 30, 3);
         let direction = 0;
+        let count = 0;
         return this;
     }
 
